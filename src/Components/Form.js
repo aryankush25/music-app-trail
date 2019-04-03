@@ -1,28 +1,54 @@
 import React, { Component } from 'react';
-import { auth } from 'firebase';
+import firebase, { auth } from 'firebase';
 import SignUpForm from './SignUpForm'
 import SignInForm from './SignInForm'
 
-const RenderText = () => {
-    if(!auth().currentUser) {
+const LogOutButton = (props) => {
+    return(
+        <div>
+            <h1>LogOut</h1>
+            <button onClick={() => {
+                auth().signOut().then(() => {
+                    window.localStorage.setItem('musicAppSignedIn', false);
+                    props.reRender();
+                    console.log("SignedOut");
+                })
+            }} >LogOut</button>
+        </div>
+    )
+}
+
+const RenderText = (props) => {
+
+    const musicAppSignedIn = window.localStorage.getItem('musicAppSignedIn');
+
+    if(musicAppSignedIn === "true") {
         return(
             <div>
-                <SignUpForm />
-                <SignInForm />
+                <h1>User Already Signed In</h1>
+                <LogOutButton reRender={props.reRender} />
             </div>
         )
     } else {
         return(
-            <h1>User Already Signed In</h1>
+            <div>
+                <SignUpForm reRender={props.reRender} />
+                <SignInForm reRender={props.reRender} />
+            </div>
         )
     }
 }
 
 class Form extends Component {
+
+    reRender = () => {
+        this.forceUpdate();
+    }
+
     render() {
         return (
             <div>
-                <RenderText />
+                <RenderText reRender={this.reRender} />
             </div>
         );
     }

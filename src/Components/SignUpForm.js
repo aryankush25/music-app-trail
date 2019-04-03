@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { auth } from 'firebase';
 
-const SignUpForm = () => {
+const SignUpForm = (props) => {
 
     var [formData, updateFormData] = useState({
         email: '',
@@ -10,10 +10,12 @@ const SignUpForm = () => {
 
     const onFormSubmit = event => {
         event.preventDefault();
-        console.log(formData);
+        //console.log(formData);
 
         auth().createUserWithEmailAndPassword(formData.email, formData.password)
         .then(() => {
+            window.localStorage.setItem('musicAppSignedIn', true);
+            props.reRender();
             console.log("SignedUp");
         })
         .catch(function(error) {

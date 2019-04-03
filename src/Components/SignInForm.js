@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { auth } from 'firebase';
 
-const SignInForm = () => {
+const SignInForm = (props) => {
 
     var [formData, updateFormData] = useState({
         email: '',
@@ -10,10 +10,12 @@ const SignInForm = () => {
 
     const onFormSubmit = event => {
         event.preventDefault();
-        console.log(formData);
+        //console.log(formData);
 
         auth().signInWithEmailAndPassword(formData.email, formData.password)
         .then(() => {
+            window.localStorage.setItem('musicAppSignedIn', true);
+            props.reRender();
             console.log("Signed In");
         })
         .catch(function(error) {
